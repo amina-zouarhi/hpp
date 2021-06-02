@@ -22,7 +22,7 @@ import java.io.IOException;
 public class IntegrationTests {
 
 	@Test
-	public void mainTest() {
+	public void mainTest() throws InterruptedException {
 		try {
 			FileReader franceCsv = new FileReader("./hpp/src/main/resources/input/France.csv");
 			FileReader italyCsv = new FileReader("./hpp/src/main/resources/input/Italy.csv");

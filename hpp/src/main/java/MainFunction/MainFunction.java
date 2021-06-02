@@ -45,16 +45,19 @@ public class MainFunction {
 		this.spainCsv = spainCsv;
 	}
 	
-	public FileReader getContaminationChain() {
+	public FileReader getContaminationChain() throws InterruptedException {
 		BlockingQueue<Person> readingQueue = new LinkedBlockingDeque<>(1024);
 		FileReader[] countryCsv = new FileReader[] {franceCsv, italyCsv, spainCsv};
 		ReadingThreadRunnable readingThreadRunnable = new ReadingThreadRunnable(readingQueue, countryCsv);
 		Thread readingThread = new Thread(readingThreadRunnable);
 		readingThread.start();
+		readingThread.join();
+		// to print the output
+		System.out.println(readingThreadRunnable.getReadingQueue().toString()); // put inside comment later !!!
 		return null;
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         FileReader franceCsv = new FileReader("./src/main/resources/input/France.csv");
 		FileReader italyCsv = new FileReader("./src/main/resources/input/Italy.csv");
 		FileReader spainCsv = new FileReader("./src/main/resources/input/Spain.csv");
