@@ -1,18 +1,12 @@
 package model;
 
+public class Person implements Comparable<Person> {
 
-public class Person implements Comparable<Person>{
-
-	private int country;	// 0 for France, 1 for Italy, 2 for Spain
+	private int country; // 0 for France, 1 for Italy, 2 for Spain
 	private int id;
 	private double contamination_time;
 	private int contaminated_by;
-	
-	
-
-	
-
-
+	private int weight;
 
 	public Person(int country, int id, double contamination_time, int contaminated_by) {
 		super();
@@ -21,7 +15,7 @@ public class Person implements Comparable<Person>{
 		this.contamination_time = contamination_time;
 		this.contaminated_by = contaminated_by;
 	}
-	
+
 	public Person(int country, String entry) {
 		this.country = country;
 		// Parser : using .split() is better in this case than using StringTokenizer
@@ -39,7 +33,7 @@ public class Person implements Comparable<Person>{
 	public void setCountry(int country) {
 		this.country = country;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -63,17 +57,28 @@ public class Person implements Comparable<Person>{
 	public void setContaminated_by(int contaminated_by) {
 		this.contaminated_by = contaminated_by;
 	}
-	
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
+
 	@Override
 	public String toString() {
 		String count = null;
-		switch(country) {
-			case 0 :
-				count = "FRANCE"; break;
-			case 1 :
-				count = "ITALY"; break;
-			case 2 :
-				count = "SPAIN"; break;
+		switch (country) {
+		case 0:
+			count = "FRANCE";
+			break;
+		case 1:
+			count = "ITALY";
+			break;
+		case 2:
+			count = "SPAIN";
+			break;
 		}
 		return "Person [country=" + count + ", id=" + id + ", contamination_time=" + contamination_time
 				+ ", contaminated_by=" + contaminated_by + "]";
