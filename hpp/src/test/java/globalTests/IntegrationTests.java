@@ -24,12 +24,13 @@ public class IntegrationTests {
 	@Test
 	public void mainTest() throws InterruptedException {
 		try {
-			FileReader franceCsv = new FileReader("./hpp/src/main/resources/input/France.csv");
-			FileReader italyCsv = new FileReader("./hpp/src/main/resources/input/Italy.csv");
-			FileReader spainCsv = new FileReader("./hpp/src/main/resources/input/Spain.csv");
+			System.out.println("Working Directory = " + System.getProperty("user.dir"));
+			FileReader franceCsv = new FileReader("./src/test/resources/input_tests/test1/France.csv");
+			FileReader italyCsv = new FileReader("./src/test/resources/input_tests/test1/Italy.csv");
+			FileReader spainCsv = new FileReader("./src/test/resources/input_tests/test1/Spain.csv");
 			MainFunction mainFunction = new MainFunction(franceCsv, italyCsv, spainCsv);
 			mainFunction.getContaminationChain(franceCsv, italyCsv, spainCsv);
-			FileReader expected = new FileReader("./hpp/src/main/resources/output/output.csv");
+			FileReader expected = new FileReader("./src/test/resources/output_tests/test1.csv");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
