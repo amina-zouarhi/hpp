@@ -1,14 +1,25 @@
 package model;
 
+import java.util.List;
+
+import utils.Chain;
+import utils.PersonsHashMap;
+import utils.Tree;
+
 public class Person implements Comparable<Person> {
 
 	private int country; // 0 for France, 1 for Italy, 2 for Spain
 	private int id;
-	private double contamination_time;
-	private int contaminated_by;
-	private int weight;
+	private Double contamination_time;
+	private Person contaminated_by;
+	private int contaminatedById;
 
-	public Person(int country, int id, double contamination_time, int contaminated_by) {
+	private int weight;
+	private List<Person> infectedPpl;
+	private Tree motherTree;
+	private boolean isInTree;
+
+	public Person(int country, int id, Double contamination_time, Person contaminated_by) {
 		super();
 		this.country = country;
 		this.id = id;
@@ -23,7 +34,7 @@ public class Person implements Comparable<Person> {
 		String[] words = entry.split(", ");
 		this.id = Integer.parseInt(words[0]);
 		this.contamination_time = Double.parseDouble(words[4]);
-		this.contaminated_by = words[5].equals("unknown") ? -1 : Integer.parseInt(words[5]);
+		this.contaminatedById = words[5].equals("unknown") ? -1 : Integer.parseInt(words[5]);
 	}
 
 	public int getCountry() {
@@ -42,20 +53,28 @@ public class Person implements Comparable<Person> {
 		this.id = id;
 	}
 
-	public double getContamination_time() {
+	public Double getContamination_time() {
 		return contamination_time;
 	}
 
-	public void setContamination_time(double contamination_time) {
+	public void setContamination_time(Double contamination_time) {
 		this.contamination_time = contamination_time;
 	}
 
-	public int getContaminated_by() {
+	public Person getContaminated_by() {
 		return contaminated_by;
 	}
 
-	public void setContaminated_by(int contaminated_by) {
+	public void setContaminated_by(Person contaminated_by) {
 		this.contaminated_by = contaminated_by;
+	}
+
+	public int getContaminatedById() {
+		return contaminatedById;
+	}
+
+	public void setContaminatedById(int contaminatedById) {
+		this.contaminatedById = contaminatedById;
 	}
 
 	public int getWeight() {
@@ -64,6 +83,30 @@ public class Person implements Comparable<Person> {
 
 	public void setWeight(int weight) {
 		this.weight = weight;
+	}
+
+	public List<Person> getInfectedPpl() {
+		return infectedPpl;
+	}
+
+	public void setInfectedPpl(List<Person> infectedPpl) {
+		this.infectedPpl = infectedPpl;
+	}
+
+	public Tree getMotherTree() {
+		return motherTree;
+	}
+
+	public void setMotherTree(Tree motherTree) {
+		this.motherTree = motherTree;
+	}
+
+	public boolean isInTree() {
+		return isInTree;
+	}
+
+	public void setInTree(boolean isInTree) {
+		this.isInTree = isInTree;
 	}
 
 	@Override
@@ -81,7 +124,7 @@ public class Person implements Comparable<Person> {
 			break;
 		}
 		return "Person [country=" + count + ", id=" + id + ", contamination_time=" + contamination_time
-				+ ", contaminated_by=" + contaminated_by + "]";
+				+ ", contaminated_by=" + contaminatedById + "]";
 	}
 
 	@Override
@@ -90,4 +133,32 @@ public class Person implements Comparable<Person> {
 		return Double.compare(this.contamination_time, o.contamination_time);
 	}
 
+	public void addInfected(Person p) {
+		this.infectedPpl.add(p);
+	}
+
+	public void update(Double actual_ts, int chain_weight, Person root, List<Chain> chains, boolean have_to_be_added) {
+		Double ts_elapsed = actual_ts - contamination_time;
+		weight = chain_weight;
+		if (ts_elapsed <= 604800) {
+			weight += 10;
+		} else if (ts_elapsed <= 1209600) {
+			weight += 4;
+		}
+
+		if (weight == 0) {
+			PersonsHashMap.removePersonFromMap(this);
+		} else if (have_to_be_added) {
+			this.getMotherTree().getWhere_update().add(this);
+			have_to_be_added = false;
+		}
+
+		if (this.infectedPpl.isEmpty()) {
+			chains.add(new Chain(root, this));
+		} else {
+			for (Person p : infectedPpl) {
+				p.update(actual_ts, weight, root, chains, have_to_be_added);
+			}
+		}
+	}
 }

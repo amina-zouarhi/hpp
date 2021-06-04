@@ -96,6 +96,8 @@ public class ReadingThreadRunnable implements Runnable {
 		ReadingThreadRunnable readingThreadRunnable = new ReadingThreadRunnable(readingQueue, countryCsv);
 		Thread readingThread = new Thread(readingThreadRunnable);
 		readingThread.start();
+		while (readingThreadRunnable.getReadingQueue().isEmpty());
+		System.out.println("Before: " + readingThreadRunnable.getReadingQueue().toString());
 		try {
 			readingThread.join();
 		} catch (InterruptedException e) {
