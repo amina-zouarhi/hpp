@@ -27,6 +27,8 @@ public class WritingThread implements Runnable {
                     e.printStackTrace();
                 }
             }
-        }    }
+        }
+        writer.close();
+        }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.BlockingQueue;
 
+import MainFunction.MainFunction;
 import model.Person;
 import utils.Chain;
 import utils.PersonsHashMap;
@@ -42,7 +43,7 @@ public class ProcessingThread implements Runnable {
 	public void run() {
 		int i = 0;
 
-		while (readerIsAlive || !blockingQueueRead.isEmpty()) {
+		while (MainFunction.readingThread.isAlive() || !blockingQueueRead.isEmpty()) {
 			if (!blockingQueueRead.isEmpty()) {
 				try {
 					if (i % 1024 == 0) {

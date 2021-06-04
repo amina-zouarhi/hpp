@@ -59,24 +59,8 @@ public class MainFunction {
 		this.spainCsv = spainCsv;
 	}
 
-	public FileReader getContaminationChain() throws InterruptedException {
-		BlockingQueue<Person> readingQueue = new LinkedBlockingDeque<>(1024);
-		FileReader[] countryCsv = new FileReader[] { franceCsv, italyCsv, spainCsv };
-		ReadingThreadRunnable readingThreadRunnable = new ReadingThreadRunnable(readingQueue, countryCsv);
-		Thread readingThread = new Thread(readingThreadRunnable);
-		readingThread.start();
-		readingThread.join();
-		// to print the output
-		if (!readingThreadRunnable.getReadingQueue().isEmpty()) {
-			System.out.println(readingThreadRunnable.getReadingQueue().toString()); // put inside comment later !!!
-		}
-		return null;
-	}
-
-	public static void main(String[] args) throws FileNotFoundException {
-		FileReader franceCsv = new FileReader("./src/main/resources/input/France.csv");
-		FileReader italyCsv = new FileReader("./src/main/resources/input/Italy.csv");
-		FileReader spainCsv = new FileReader("./src/main/resources/input/Spain.csv");
+	public void getContaminationChain(FileReader franceCsv, FileReader italyCsv, FileReader spainCsv)
+			throws InterruptedException, FileNotFoundException {
 
 		try {
 			writer = new PrintWriter(new File("./src/main/resources/output/output.csv"));
@@ -96,9 +80,9 @@ public class MainFunction {
 		processThread = new Thread(processingThread);
 		writeThread = new Thread(writingThread);
 
-    	// Start counting the time of execution from here
+		// Start counting the time of execution from here
 		long start = System.nanoTime();
-		
+
 		readingThread.start();
 		processThread.start();
 		writeThread.start();
@@ -111,16 +95,30 @@ public class MainFunction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
+
 		// Stop counting the time of execution
-		    long end = System.nanoTime();
-		    
-		 // Elapsed time  
-			long elapsedTime= end-start; 
-		//ELAPSED TIME
-			System.out.println("Elapsed time using Thread is: "+Math.abs(elapsedTime));
+		long end = System.nanoTime();
+
+		// Elapsed time
+		long elapsedTime = end - start;
+		// ELAPSED TIME
+		System.out.println("Elapsed time using Thread is: " + Math.abs(elapsedTime));
 		System.out.println(processingThread.getBlockingQueueWrite().toString());
 
+	}
+
+	public static void main(String[] args) throws FileNotFoundException {
+		FileReader franceCsv = new FileReader("./src/main/resources/input/France.csv");
+		FileReader italyCsv = new FileReader("./src/main/resources/input/Italy.csv");
+		FileReader spainCsv = new FileReader("./src/main/resources/input/Spain.csv");
+
+		MainFunction covid = new MainFunction(franceCsv, italyCsv, spainCsv );
+		try {
+			covid.getContaminationChain(franceCsv, italyCsv, spainCsv);
+		} catch (FileNotFoundException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
