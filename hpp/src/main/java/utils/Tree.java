@@ -79,7 +79,7 @@ public class Tree {
         }
     }
 
-    public void updateTree(Double actual_ts) {
+    public void updateTree(Double actualTs) {
 
         chains.clear();
         topChains = new Chain[3];
@@ -88,7 +88,7 @@ public class Tree {
         List<Person> whereToUpdate_now = new ArrayList<>(whereToUpdate);
         whereToUpdate.clear();
         for (Person p : whereToUpdate_now) {
-            p.update(actual_ts, 0, root, chains, true);
+            p.update(actualTs, 0, root, chains, true);
         }
 
         topChainWeight = 0;
@@ -107,7 +107,7 @@ public class Tree {
         }
 
         potential_topChainWeight = topChainWeight;
-        lastUpdate = actual_ts;
+        lastUpdate = actualTs;
     }
 
 

@@ -134,7 +134,7 @@ public class Person implements Comparable<Person> {
 	}
 
 	public void addInfected(Person p) {
-		this.infectedPpl.add(p);
+		if (this.infectedPpl != null) this.infectedPpl.add(p);
 	}
 
 	public void update(Double actualTs, int chain_weight, Person root, List<Chain> chains, boolean HasToBeAdded) {
@@ -153,12 +153,15 @@ public class Person implements Comparable<Person> {
 			HasToBeAdded = false;
 		}
 
-		if (this.infectedPpl.isEmpty()) {
-			chains.add(new Chain(root, this));
-		} else {
-			for (Person p : infectedPpl) {
-				p.update(actualTs, weight, root, chains, HasToBeAdded);
+		if (this.infectedPpl != null) {
+			if (this.infectedPpl.isEmpty()) {
+				chains.add(new Chain(root, this));
+			} else {
+				for (Person p : infectedPpl) {
+					p.update(actualTs, weight, root, chains, HasToBeAdded);
+				}
 			}
 		}
+		
 	}
 }
