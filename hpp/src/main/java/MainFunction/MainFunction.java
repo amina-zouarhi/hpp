@@ -96,6 +96,9 @@ public class MainFunction {
 		processThread = new Thread(processingThread);
 		writeThread = new Thread(writingThread);
 
+    	// Start counting the time of execution from here
+		long start = System.nanoTime();
+		
 		readingThread.start();
 		processThread.start();
 		writeThread.start();
@@ -108,6 +111,16 @@ public class MainFunction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+			
+		// Stop counting the time of execution
+		    long end = System.nanoTime();
+		    
+		 // Elapsed time  
+			long elapsedTime= end-start; 
+		//ELAPSED TIME
+			System.out.println("Elapsed time using Thread is: "+Math.abs(elapsedTime));
+		System.out.println(processingThread.getBlockingQueueWrite().toString());
+
 
 	}
 

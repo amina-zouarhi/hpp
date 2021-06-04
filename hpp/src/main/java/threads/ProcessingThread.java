@@ -184,7 +184,7 @@ public class ProcessingThread implements Runnable {
 						sb.append(top3rdChain.toString());
 
 					getBlockingQueueWrite().put(sb.toString());
-					System.out.println(getBlockingQueueWrite().toString());
+		
 
 				} catch (InterruptedException e) {
 					e.printStackTrace();
