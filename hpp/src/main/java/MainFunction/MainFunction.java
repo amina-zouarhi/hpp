@@ -57,6 +57,8 @@ public class MainFunction {
 		return null;
 	}
 	
+	
+	
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         FileReader franceCsv = new FileReader("./src/main/resources/input/France.csv");
 		FileReader italyCsv = new FileReader("./src/main/resources/input/Italy.csv");

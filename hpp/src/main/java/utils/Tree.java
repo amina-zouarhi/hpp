@@ -11,14 +11,14 @@ public class Tree {
 
     private Person root;
     private List<Chain> chains;
-    private List<Person> where_update;
+    private List<Person> whereToUpdate;
 
     private final List<Person> waitingList;
 
-    private Chain[] top_chains;
-    private int top_chain_weight;
-    private int potential_top_chain_weight;
-    private Double last_update;
+    private Chain[] topChains;
+    private int topChainWeight;
+    private int potential_topChainWeight;
+    private Double lastUpdate;
 
     public Tree(Person root) {
         this.root = root;
@@ -26,18 +26,18 @@ public class Tree {
         this.root.setMotherTree(this);
         this.root.setInTree(true);
 
-        top_chains = new Chain[3];
+        topChains = new Chain[3];
         chains = new ArrayList<>();
-        top_chains[0] = new Chain(root, root);
-        chains.add(top_chains[0]);
+        topChains[0] = new Chain(root, root);
+        chains.add(topChains[0]);
 
-        top_chain_weight = 10;
-        potential_top_chain_weight = 10;
+        topChainWeight = 10;
+        potential_topChainWeight = 10;
 
-        where_update = new ArrayList<>();
-        where_update.add(root);
+        whereToUpdate = new ArrayList<>();
+        whereToUpdate.add(root);
         waitingList = new ArrayList<>();
-        last_update = root.getContamination_time();
+        lastUpdate = root.getContamination_time();
     }
 
     @Override
@@ -47,25 +47,25 @@ public class Tree {
                 '}';
     }
 
-    public void addPersonToTree(Person new_person, Person contaminated_by) {
+    public void addPersonToTree(Person newPerson, Person contaminated_by) {
 
-        contaminated_by.addInfected(new_person);
-        new_person.setContaminated_by(contaminated_by);
-        new_person.setWeight(contaminated_by.getWeight() + 10);
-        new_person.setMotherTree(this);
-        new_person.setInTree(true);
+        contaminated_by.addInfected(newPerson);
+        newPerson.setContaminated_by(contaminated_by);
+        newPerson.setWeight(contaminated_by.getWeight() + 10);
+        newPerson.setMotherTree(this);
+        newPerson.setInTree(true);
 
-        if (top_chain_weight < new_person.getWeight()) {
-            top_chain_weight = new_person.getWeight();
-            potential_top_chain_weight = new_person.getWeight();
+        if (topChainWeight < newPerson.getWeight()) {
+            topChainWeight = newPerson.getWeight();
+            potential_topChainWeight = newPerson.getWeight();
         }
 
         if (contaminated_by.getInfectedPpl().size() == 1) {
             for (Chain c : chains) {
                 if (c.getEnd().equals(contaminated_by)) {
-                    c.setWeight(new_person.getWeight());
-                    c.setEnd(new_person);
-                    if (!c.equals(top_chains[0]) && !c.equals(top_chains[1]) && !c.equals(top_chains[2])) {
+                    c.setWeight(newPerson.getWeight());
+                    c.setEnd(newPerson);
+                    if (!c.equals(topChains[0]) && !c.equals(topChains[1]) && !c.equals(topChains[2])) {
                         updateTopChains(c);
                     } else {
                         sortTopChains();
@@ -73,7 +73,7 @@ public class Tree {
                 }
             }
         } else {
-            Chain c = new Chain(root, new_person);
+            Chain c = new Chain(root, newPerson);
             chains.add(c);
             updateTopChains(c);
         }
@@ -82,22 +82,22 @@ public class Tree {
     public void updateTree(Double actual_ts) {
 
         chains.clear();
-        top_chains = new Chain[3];
+        topChains = new Chain[3];
 
         // Update only where it is needed
-        List<Person> where_update_now = new ArrayList<>(where_update);
-        where_update.clear();
-        for (Person p : where_update_now) {
+        List<Person> whereToUpdate_now = new ArrayList<>(whereToUpdate);
+        whereToUpdate.clear();
+        for (Person p : whereToUpdate_now) {
             p.update(actual_ts, 0, root, chains, true);
         }
 
-        top_chain_weight = 0;
+        topChainWeight = 0;
 
         // Remove chains with weight = 0 and get top chain weight
         ListIterator<Chain> iterator = chains.listIterator();
         while (iterator.hasNext()) {
             Chain c = iterator.next();
-            top_chain_weight = Integer.max(top_chain_weight, c.getWeight());
+            topChainWeight = Integer.max(topChainWeight, c.getWeight());
             if (c.getEnd().getWeight() == 0) {
                 deleteChain(c.getEnd());
                 iterator.remove();
@@ -106,8 +106,8 @@ public class Tree {
             }
         }
 
-        potential_top_chain_weight = top_chain_weight;
-        last_update = actual_ts;
+        potential_topChainWeight = topChainWeight;
+        lastUpdate = actual_ts;
     }
 
 
@@ -123,7 +123,7 @@ public class Tree {
     }
 
     public void deleteTree() {
-        for (Person p : where_update) {
+        for (Person p : whereToUpdate) {
             for (Person infect : p.getInfectedPpl()) {
                 PersonsHashMap.removePersonFromMap(infect);
             }
@@ -137,8 +137,8 @@ public class Tree {
         p.setInTree(false);
 
         waitingList.add(p);
-        potential_top_chain_weight += 10;
-        last_update = p.getContamination_time();
+        potential_topChainWeight += 10;
+        lastUpdate = p.getContamination_time();
     }
 
     public int getWeightOfChainEndingWith(Person end) {
@@ -151,36 +151,36 @@ public class Tree {
     }
 
     public void updateTopChains(Chain c) {
-        if (top_chains[0] == null || c.compareTo(top_chains[0]) > 0) {
-            top_chains[2] = top_chains[1];
-            top_chains[1] = top_chains[0];
-            top_chains[0] = c;
-        } else if (top_chains[1] == null || c.compareTo(top_chains[1]) > 0) {
-            top_chains[2] = top_chains[1];
-            top_chains[1] = c;
-        } else if (top_chains[2] == null || c.compareTo(top_chains[2]) > 0) {
-            top_chains[2] = c;
+        if (topChains[0] == null || c.compareTo(topChains[0]) > 0) {
+            topChains[2] = topChains[1];
+            topChains[1] = topChains[0];
+            topChains[0] = c;
+        } else if (topChains[1] == null || c.compareTo(topChains[1]) > 0) {
+            topChains[2] = topChains[1];
+            topChains[1] = c;
+        } else if (topChains[2] == null || c.compareTo(topChains[2]) > 0) {
+            topChains[2] = c;
         }
     }
 
 
     private void sortTopChains() {
-        if (top_chains[1] != null) {
-            if (top_chains[1].compareTo(top_chains[0]) > 0) {
-                Chain temp = top_chains[0];
-                top_chains[0] = top_chains[1];
-                top_chains[1] = temp;
-            } else if (top_chains[2] != null) {
-                if (top_chains[2].compareTo(top_chains[1]) > 0) {
-                    if (top_chains[2].compareTo(top_chains[0]) > 0) {
-                        Chain temp = top_chains[0];
-                        top_chains[0] = top_chains[2];
-                        top_chains[2] = top_chains[1];
-                        top_chains[1] = temp;
+        if (topChains[1] != null) {
+            if (topChains[1].compareTo(topChains[0]) > 0) {
+                Chain temp = topChains[0];
+                topChains[0] = topChains[1];
+                topChains[1] = temp;
+            } else if (topChains[2] != null) {
+                if (topChains[2].compareTo(topChains[1]) > 0) {
+                    if (topChains[2].compareTo(topChains[0]) > 0) {
+                        Chain temp = topChains[0];
+                        topChains[0] = topChains[2];
+                        topChains[2] = topChains[1];
+                        topChains[1] = temp;
                     } else {
-                        Chain temp = top_chains[1];
-                        top_chains[1] = top_chains[2];
-                        top_chains[2] = temp;
+                        Chain temp = topChains[1];
+                        topChains[1] = topChains[2];
+                        topChains[2] = temp;
                     }
                 }
             }
@@ -205,28 +205,28 @@ public class Tree {
         this.root = root;
     }
 
-    public List<Person> getWhere_update() {
-        return where_update;
+    public List<Person> getWhereToUpdate() {
+        return whereToUpdate;
     }
 
-    public void setWhere_update(List<Person> where_update) {
-        this.where_update = where_update;
+    public void setwhereToUpdate(List<Person> whereToUpdate) {
+        this.whereToUpdate = whereToUpdate;
     }
 
     public List<Person> getWaitingList() {
         return waitingList;
     }
 
-    public int getPotential_top_chain_weight() {
-        return potential_top_chain_weight;
+    public int getPotential_topChainWeight() {
+        return potential_topChainWeight;
     }
 
-    public Double getLast_update() {
-        return last_update;
+    public Double getLastUpdate() {
+        return lastUpdate;
     }
 
-    public Chain[] getTop_chains() {
-        return top_chains;
+    public Chain[] getTopChains() {
+        return topChains;
     }
 
 

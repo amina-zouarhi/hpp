@@ -137,8 +137,8 @@ public class Person implements Comparable<Person> {
 		this.infectedPpl.add(p);
 	}
 
-	public void update(Double actual_ts, int chain_weight, Person root, List<Chain> chains, boolean have_to_be_added) {
-		Double ts_elapsed = actual_ts - contamination_time;
+	public void update(Double actualTs, int chain_weight, Person root, List<Chain> chains, boolean HasToBeAdded) {
+		Double ts_elapsed = actualTs - contamination_time;
 		weight = chain_weight;
 		if (ts_elapsed <= 604800) {
 			weight += 10;
@@ -148,16 +148,16 @@ public class Person implements Comparable<Person> {
 
 		if (weight == 0) {
 			PersonsHashMap.removePersonFromMap(this);
-		} else if (have_to_be_added) {
-			this.getMotherTree().getWhere_update().add(this);
-			have_to_be_added = false;
+		} else if (HasToBeAdded) {
+			this.getMotherTree().getWhereToUpdate().add(this);
+			HasToBeAdded = false;
 		}
 
 		if (this.infectedPpl.isEmpty()) {
 			chains.add(new Chain(root, this));
 		} else {
 			for (Person p : infectedPpl) {
-				p.update(actual_ts, weight, root, chains, have_to_be_added);
+				p.update(actualTs, weight, root, chains, HasToBeAdded);
 			}
 		}
 	}
