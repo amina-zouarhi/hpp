@@ -1,12 +1,19 @@
 package threads;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import model.Person;
 
+/**
+ * 
+ * This class reads the  csv files and return a blocking queue containing the line/lines read 
+ *
+ */
 public class ReadingThreadRunnable implements Runnable {
 	private BlockingQueue<Person> readingQueue;
 	private FileReader[] countryCsv;
@@ -83,5 +90,26 @@ public class ReadingThreadRunnable implements Runnable {
 	    }
 	    return min;
 	}
+	
+//	public static void main(String[] args) throws FileNotFoundException {
+//		FileReader franceCsv = new FileReader("./src/main/resources/input/France.csv");
+//		FileReader italyCsv = new FileReader("./src/main/resources/input/Italy.csv");
+//		FileReader spainCsv = new FileReader("./src/main/resources/input/Spain.csv");
+//		
+//		BlockingQueue<Person> readingQueue = new LinkedBlockingDeque<>(1024);
+//		FileReader[] countryCsv = new FileReader[] {franceCsv, italyCsv, spainCsv};
+//		ReadingThreadRunnable readingThreadRunnable = new ReadingThreadRunnable(readingQueue, countryCsv);
+//		Thread readingThread = new Thread(readingThreadRunnable);
+//		readingThread.start();
+//		while (readingThreadRunnable.getReadingQueue().isEmpty());
+//		System.out.println("Before: " + readingThreadRunnable.getReadingQueue().toString());
+//		try {
+//			readingThread.join();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		System.out.println(readingThreadRunnable.getReadingQueue().toString());
+//	}
 
 }
