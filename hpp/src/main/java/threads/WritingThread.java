@@ -5,16 +5,19 @@ import java.util.concurrent.BlockingQueue;
 
 import MainFunction.MainFunction;
 
+/**
+ * This class implements Runnable, it main goal is to take a blocking queue and write the data in an  output file
+ * @author Team
+ *
+ */
 public class WritingThread implements Runnable {
 
 	PrintWriter writer;
     BlockingQueue<String> blockingQueueWrite;
-    boolean isProcessing;
 
-    public WritingThread(PrintWriter printWriter, BlockingQueue<String> blockingQueueWrite, boolean isProcessing) {
+    public WritingThread(PrintWriter printWriter, BlockingQueue<String> blockingQueueWrite) {
         this.blockingQueueWrite = blockingQueueWrite;
         this.writer = printWriter;
-        this.isProcessing = isProcessing;
     }
 
     public void run() {
