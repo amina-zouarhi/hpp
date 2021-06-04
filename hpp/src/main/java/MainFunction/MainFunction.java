@@ -13,19 +13,32 @@ import threads.ProcessingThread;
 import threads.ReadingThreadRunnable;
 import threads.WritingThread;
 
+/**
+ * 
+ * @author Team
+ * 
+ * This is our main function, It creates the threads, launches them and write result on output file
+ *
+ */
 public class MainFunction {
 
+	/*
+	 * Input Files
+	 */
 	private FileReader franceCsv;
 	private FileReader italyCsv;
 	private FileReader spainCsv;
 
+	/**
+	 * Our three threads
+	 */
 	public static Thread readingThread;
 	public static Thread processThread;
 	public static Thread writeThread;
 
-	static boolean readingThreadIsAlive = true;
-	static boolean processThreadIsAlive = true;
-
+	/**
+	 * The writer, it's used to write in output file
+	 */
 	static PrintWriter writer = null;
 
 	public MainFunction(FileReader franceCsv, FileReader italyCsv, FileReader spainCsv) {
@@ -35,6 +48,10 @@ public class MainFunction {
 		this.spainCsv = spainCsv;
 	}
 
+	/**
+	 * getters and setters
+	 * 
+	 */
 	public FileReader getFranceCsv() {
 		return franceCsv;
 	}
@@ -59,6 +76,14 @@ public class MainFunction {
 		this.spainCsv = spainCsv;
 	}
 
+	/**
+	 * The main function, it does literally everything, from initializing the threads to writing using the classes that implement Runnable
+	 * @param franceCsv
+	 * @param italyCsv
+	 * @param spainCsv
+	 * @throws InterruptedException
+	 * @throws FileNotFoundException
+	 */
 	public void getContaminationChain(FileReader franceCsv, FileReader italyCsv, FileReader spainCsv)
 			throws InterruptedException, FileNotFoundException {
 
@@ -72,9 +97,8 @@ public class MainFunction {
 		BlockingQueue<String> writingQueue = new LinkedBlockingDeque<>(1024);
 		FileReader[] countryCsv = new FileReader[] { franceCsv, italyCsv, spainCsv };
 		ReadingThreadRunnable readingThreadRunnable = new ReadingThreadRunnable(readingQueue, countryCsv);
-		ProcessingThread processingThread = new ProcessingThread(readingThreadRunnable.getReadingQueue(), writingQueue,
-				readingThreadIsAlive);
-		WritingThread writingThread = new WritingThread(writer, writingQueue, processThreadIsAlive);
+		ProcessingThread processingThread = new ProcessingThread(readingThreadRunnable.getReadingQueue(), writingQueue);
+		WritingThread writingThread = new WritingThread(writer, writingQueue);
 
 		readingThread = new Thread(readingThreadRunnable);
 		processThread = new Thread(processingThread);
@@ -102,9 +126,7 @@ public class MainFunction {
 		// Elapsed time
 		long elapsedTime = end - start;
 		// ELAPSED TIME
-		System.out.println("Elapsed time using Thread is: " + Math.abs(elapsedTime));
-		System.out.println(processingThread.getBlockingQueueWrite().toString());
-
+		System.out.println("Elapsed time using Thread is: " + Math.abs(elapsedTime) + "ns");
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {

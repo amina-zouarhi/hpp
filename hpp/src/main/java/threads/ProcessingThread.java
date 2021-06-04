@@ -21,7 +21,6 @@ public class ProcessingThread implements Runnable {
 
 	BlockingQueue<Person> blockingQueueRead;
 	private BlockingQueue<String> blockingQueueWrite;
-	boolean readerIsAlive;
 
 	List<Tree> trees;
 	Chain top1stChain = null;
@@ -29,12 +28,10 @@ public class ProcessingThread implements Runnable {
 	Chain top3rdChain = null;
 	int MinTopChain = 0;
 
-	public ProcessingThread(BlockingQueue<Person> blockingQueueRead, BlockingQueue<String> blockingQueueWrite,
-			boolean readerIsAlive) {
+	public ProcessingThread(BlockingQueue<Person> blockingQueueRead, BlockingQueue<String> blockingQueueWrite) {
 		this.blockingQueueRead = blockingQueueRead;
 		this.setBlockingQueueWrite(blockingQueueWrite);
 		this.trees = new ArrayList<>();
-		this.readerIsAlive = readerIsAlive;
 	}
 
 	/**
@@ -47,7 +44,7 @@ public class ProcessingThread implements Runnable {
 			if (!blockingQueueRead.isEmpty()) {
 				try {
 					if (i % 1024 == 0) {
-						System.out.println(i);
+						if (i != 0) System.out.println(i);
 					}
 					i++;
 
@@ -120,17 +117,18 @@ public class ProcessingThread implements Runnable {
 					}
 					trees.addAll(new_trees);
 
-					// Add person to HashMap
+					/** Add person to HashMap*/
+					
 					PersonsHashMap.addPersonToMap(newPerson);
 
 					Tree treeModified = null;
-					// If the person is contaminated by someone unknown
+					/** If the person is contaminated by someone unknown*/
 					if (newPerson.getContaminatedById() == -1) {
 						treeModified = new Tree(newPerson);
 						trees.add(treeModified);
 					} else {
 
-						// If we found the person who contaminated the new person
+						/** If we found the person who contaminated the new person*/
 						Person contaminated_by = PersonsHashMap.getPersonWithId(newPerson.getContaminatedById());
 						
 						/**
