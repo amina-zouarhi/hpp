@@ -45,7 +45,7 @@ public class ProcessingThread implements Runnable{
 		while (readerIsAlive || !blockingQueueRead.isEmpty()) {
 			if (!blockingQueueRead.isEmpty()) {
 				try {
-					if (i % 5000 == 0) {
+					if (i % 1024 == 0) {
 						System.out.println(i);
 					}
 					i++;
@@ -183,6 +183,7 @@ public class ProcessingThread implements Runnable{
 						sb.append(top3rdChain.toString());
 
 					getBlockingQueueWrite().put(sb.toString());
+					System.out.println(getBlockingQueueWrite().toString());
 
 				} catch (InterruptedException e) {
 					e.printStackTrace();

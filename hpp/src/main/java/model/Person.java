@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import utils.Chain;
@@ -11,20 +12,20 @@ public class Person implements Comparable<Person> {
 	private int country; // 0 for France, 1 for Italy, 2 for Spain
 	private int id;
 	private Double contamination_time;
-	private Person contaminated_by;
+	private Person contaminated_by = null;
 	private int contaminatedById;
 
 	private int weight;
-	private List<Person> infectedPpl;
+	private List<Person> infectedPpl = new ArrayList<>();;
 	private Tree motherTree;
-	private boolean isInTree;
+	private boolean isInTree = false;
 
-	public Person(int country, int id, Double contamination_time, Person contaminated_by) {
+	public Person(int country, int id, Double contamination_time, int contaminatedById) {
 		super();
 		this.country = country;
 		this.id = id;
 		this.contamination_time = contamination_time;
-		this.contaminated_by = contaminated_by;
+		this.contaminatedById = contaminatedById;
 	}
 
 	public Person(int country, String entry) {

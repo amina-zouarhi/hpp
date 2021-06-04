@@ -15,7 +15,19 @@ public class Chain implements Comparable<Chain> {
 
 	    @Override
 	    public String toString() {
-	        return root.getCountry() + ", " + root.getId() + ", " + this.weight + "; ";
+	    	String count = null;
+			switch (root.getCountry()) {
+			case 0:
+				count = "FRANCE";
+				break;
+			case 1:
+				count = "ITALY";
+				break;
+			case 2:
+				count = "SPAIN";
+				break;
+			}
+	        return count + ", " + root.getId() + ", " + this.weight + "; ";
 	    }
 
 	    @Override
