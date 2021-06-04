@@ -4,6 +4,11 @@ import java.util.HashMap;
 
 import model.Person;
 
+/**
+ * 
+ * This class manipulates a static hashmap 
+ *
+ */
 public class PersonsHashMap {
 
 	 private static final HashMap<Integer, Person> hashMap = new HashMap<Integer, Person>();

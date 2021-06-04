@@ -6,6 +6,11 @@ import java.util.ListIterator;
 
 import model.Person;
 
+/**
+ * 
+ * Tree class
+ *
+ */
 public class Tree {
 
 
@@ -22,7 +27,7 @@ public class Tree {
 
     public Tree(Person root) {
         this.root = root;
-        this.root.setWeight(10);
+        this.root.setScore(10);
         this.root.setMotherTree(this);
         this.root.setInTree(true);
 
@@ -51,19 +56,19 @@ public class Tree {
 
         contaminated_by.addInfected(newPerson);
         newPerson.setContaminated_by(contaminated_by);
-        newPerson.setWeight(contaminated_by.getWeight() + 10);
+        newPerson.setScore(contaminated_by.getScore() + 10);
         newPerson.setMotherTree(this);
         newPerson.setInTree(true);
 
-        if (topChainWeight < newPerson.getWeight()) {
-            topChainWeight = newPerson.getWeight();
-            potential_topChainWeight = newPerson.getWeight();
+        if (topChainWeight < newPerson.getScore()) {
+            topChainWeight = newPerson.getScore();
+            potential_topChainWeight = newPerson.getScore();
         }
 
         if (contaminated_by.getInfectedPpl().size() == 1) {
             for (Chain c : chains) {
                 if (c.getEnd().equals(contaminated_by)) {
-                    c.setWeight(newPerson.getWeight());
+                    c.setWeight(newPerson.getScore());
                     c.setEnd(newPerson);
                     if (!c.equals(topChains[0]) && !c.equals(topChains[1]) && !c.equals(topChains[2])) {
                         updateTopChains(c);
@@ -98,7 +103,7 @@ public class Tree {
         while (iterator.hasNext()) {
             Chain c = iterator.next();
             topChainWeight = Integer.max(topChainWeight, c.getWeight());
-            if (c.getEnd().getWeight() == 0) {
+            if (c.getEnd().getScore() == 0) {
                 deleteChain(c.getEnd());
                 iterator.remove();
             } else {

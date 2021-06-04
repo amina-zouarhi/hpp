@@ -2,6 +2,11 @@ package utils;
 
 import model.Person;
 
+/**
+ * 
+ * Chain class 
+ *
+ */
 public class Chain implements Comparable<Chain> {
 	 private Person root;
 	    private Person end;
@@ -10,7 +15,7 @@ public class Chain implements Comparable<Chain> {
 	    public Chain(Person root, Person end) {
 	        this.root = root;
 	        this.end = end;
-	        this.weight = end.getWeight();
+	        this.weight = end.getScore();
 	    }
 
 	    @Override

@@ -7,6 +7,13 @@ import utils.Chain;
 import utils.PersonsHashMap;
 import utils.Tree;
 
+
+/**
+ * 
+ * This model class helps us shape the user information
+ * @author Team
+ *
+ */
 public class Person implements Comparable<Person> {
 
 	private int country; // 0 for France, 1 for Italy, 2 for Spain
@@ -15,7 +22,7 @@ public class Person implements Comparable<Person> {
 	private Person contaminated_by = null;
 	private int contaminatedById;
 
-	private int weight;
+	private int score;
 	private List<Person> infectedPpl = new ArrayList<>();;
 	private Tree motherTree;
 	private boolean isInTree = false;
@@ -78,12 +85,12 @@ public class Person implements Comparable<Person> {
 		this.contaminatedById = contaminatedById;
 	}
 
-	public int getWeight() {
-		return weight;
+	public int getScore() {
+		return score;
 	}
 
-	public void setWeight(int weight) {
-		this.weight = weight;
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 	public List<Person> getInfectedPpl() {
@@ -138,16 +145,25 @@ public class Person implements Comparable<Person> {
 		if (this.infectedPpl != null) this.infectedPpl.add(p);
 	}
 
-	public void update(Double actualTs, int chain_weight, Person root, List<Chain> chains, boolean HasToBeAdded) {
+	
+	/**
+	 * This recursive method update the data of a user and the chains related to it
+	 * @param actualTs
+	 * @param chain_score
+	 * @param root
+	 * @param chains
+	 * @param HasToBeAdded
+	 */
+	public void update(Double actualTs, int chain_score, Person root, List<Chain> chains, boolean HasToBeAdded) {
 		Double ts_elapsed = actualTs - contamination_time;
-		weight = chain_weight;
+		score = chain_score;
 		if (ts_elapsed <= 604800) {
-			weight += 10;
+			score += 10;
 		} else if (ts_elapsed <= 1209600) {
-			weight += 4;
+			score += 4;
 		}
 
-		if (weight == 0) {
+		if (score == 0) {
 			PersonsHashMap.removePersonFromMap(this);
 		} else if (HasToBeAdded) {
 			this.getMotherTree().getWhereToUpdate().add(this);
@@ -159,7 +175,7 @@ public class Person implements Comparable<Person> {
 				chains.add(new Chain(root, this));
 			} else {
 				for (Person p : infectedPpl) {
-					p.update(actualTs, weight, root, chains, HasToBeAdded);
+					p.update(actualTs, score, root, chains, HasToBeAdded);
 				}
 			}
 		}

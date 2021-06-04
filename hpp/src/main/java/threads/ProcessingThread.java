@@ -10,7 +10,13 @@ import utils.Chain;
 import utils.PersonsHashMap;
 import utils.Tree;
 
-public class ProcessingThread implements Runnable{
+/**
+ * 
+ * The class processes the reading queue brought by the reading thread and it
+ * finds the top contamination chains
+ *
+ */
+public class ProcessingThread implements Runnable {
 
 	BlockingQueue<Person> blockingQueueRead;
 	private BlockingQueue<String> blockingQueueWrite;
@@ -30,16 +36,10 @@ public class ProcessingThread implements Runnable{
 		this.readerIsAlive = readerIsAlive;
 	}
 
-	
 	/**
 	 * The processing thread main function
 	 */
 	public void run() {
-		addNewPerson();
-	}
-
-	public void addNewPerson() {
-
 		int i = 0;
 
 		while (readerIsAlive || !blockingQueueRead.isEmpty()) {
@@ -94,7 +94,7 @@ public class ProcessingThread implements Runnable{
 									Tree tree_to_update = contamined_by.getMotherTree();
 									tree_to_update.updateTree(personToAdd.getContamination_time());
 
-									if (contamined_by.getWeight() == 0) {
+									if (contamined_by.getScore() == 0) {
 										new_trees.add(new Tree(personToAdd));
 									} else {
 										tree_to_update.addPersonToTree(personToAdd, contamined_by);
@@ -131,15 +131,15 @@ public class ProcessingThread implements Runnable{
 
 						// If we found the person who contaminated the new person
 						Person contaminated_by = PersonsHashMap.getPersonWithId(newPerson.getContaminatedById());
-
-						// We have 3 cases here :
-						// First, IF the contaminator does not exist : we create a tree
-						// ELSE, IF the person exist (so he has a weight != 0), then IF the tree has a
-						// potential to be in the top 3,
-						// we add him in the tree, OTHERWISE we had him iun the waiting list
-						// ELSE, IF the contaminator exist but he is not in a tree (so he is in a
-						// waiting list of a tree),
-						// we need to had the newPerson in the waiting list
+						
+						/**
+						 * We have 3 cases here : First, IF the contaminator does not exist : we create
+						 * a tree ELSE, IF the person exist (so he has a weight != 0), then IF the tree
+						 * has a potential to be in the top 3, we add him in the tree, OTHERWISE we had
+						 * him iun the waiting list ELSE, IF the contaminator exist but he is not in a
+						 * tree (so he is in a waiting list of a tree), we need to had the newPerson in
+						 * the waiting list
+						 */
 
 						if (contaminated_by == null) {
 							treeModified = new Tree(newPerson);
@@ -170,6 +170,7 @@ public class ProcessingThread implements Runnable{
 								else
 									sortTopChains();
 							}
+							
 						}
 					}
 
@@ -231,11 +232,9 @@ public class ProcessingThread implements Runnable{
 
 	}
 
-
 	public BlockingQueue<String> getBlockingQueueWrite() {
 		return blockingQueueWrite;
 	}
-
 
 	public void setBlockingQueueWrite(BlockingQueue<String> blockingQueueWrite) {
 		this.blockingQueueWrite = blockingQueueWrite;

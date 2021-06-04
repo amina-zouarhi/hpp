@@ -9,6 +9,11 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import model.Person;
 
+/**
+ * 
+ * This class reads the  csv files and return a blocking queue containing the line/lines read 
+ *
+ */
 public class ReadingThreadRunnable implements Runnable {
 	private BlockingQueue<Person> readingQueue;
 	private FileReader[] countryCsv;
