@@ -1,13 +1,17 @@
 package MainFunction;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import model.Person;
 import threads.ProcessingThread;
 import threads.ReadingThreadRunnable;
+import threads.WritingThread;
 
 public class MainFunction {
 
@@ -15,8 +19,14 @@ public class MainFunction {
 	private FileReader italyCsv;
 	private FileReader spainCsv;
 
-	static boolean readThreadAlive = true;
-	static boolean addThreadAlive = true;
+	public static Thread readingThread;
+	public static Thread processThread;
+	public static Thread writeThread;
+
+	static boolean readingThreadIsAlive = true;
+	static boolean processThreadIsAlive = true;
+
+	static PrintWriter writer = null;
 
 	public MainFunction(FileReader franceCsv, FileReader italyCsv, FileReader spainCsv) {
 		super();
@@ -57,7 +67,9 @@ public class MainFunction {
 		readingThread.start();
 		readingThread.join();
 		// to print the output
-		System.out.println(readingThreadRunnable.getReadingQueue().toString()); // put inside comment later !!!
+		if (!readingThreadRunnable.getReadingQueue().isEmpty()) {
+			System.out.println(readingThreadRunnable.getReadingQueue().toString()); // put inside comment later !!!
+		}
 		return null;
 	}
 
@@ -66,20 +78,32 @@ public class MainFunction {
 		FileReader italyCsv = new FileReader("./src/main/resources/input/Italy.csv");
 		FileReader spainCsv = new FileReader("./src/main/resources/input/Spain.csv");
 
+		try {
+			writer = new PrintWriter(new File("./src/main/resources/output/output.csv"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		BlockingQueue<Person> readingQueue = new LinkedBlockingDeque<>(1024);
 		BlockingQueue<String> writingQueue = new LinkedBlockingDeque<>(1024);
 		FileReader[] countryCsv = new FileReader[] { franceCsv, italyCsv, spainCsv };
 		ReadingThreadRunnable readingThreadRunnable = new ReadingThreadRunnable(readingQueue, countryCsv);
 		ProcessingThread processingThread = new ProcessingThread(readingThreadRunnable.getReadingQueue(), writingQueue,
-				readThreadAlive);
-		
-		Thread readingThread = new Thread(readingThreadRunnable);
-		Thread processThread = new Thread(processingThread);
+				readingThreadIsAlive);
+		WritingThread writingThread = new WritingThread(writer, writingQueue, processThreadIsAlive);
+
+		readingThread = new Thread(readingThreadRunnable);
+		processThread = new Thread(processingThread);
+		writeThread = new Thread(writingThread);
+
 		readingThread.start();
 		processThread.start();
+		writeThread.start();
+
 		try {
 			readingThread.join();
 			processThread.join();
+			writeThread.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
